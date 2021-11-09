@@ -1,12 +1,21 @@
 import { hexadecimal_to_decimal, decimal_to_hexadecimal } from "./utilities.js";
 
 export function flood_fill(cells, point, tagColor, fillColor) {
-    if (tagColor == fillColor)
+    if (!tagColor.includes('#'))
+        tagColor = rgb_to_hex(tagColor);
+    if (!fillColor.includes('#'))
+        fillColor = rgb_to_hex(fillColor);
+
+    if (same_color(tagColor, fillColor, 1.5))
         return;
 
-    let res = Math.sqrt(cells.length);
-    if (cells[point.indexX + point.indexY * res] == tagColor) {
+    let cellHexColor = cells[point.indexX + point.indexY * res];
+    if (!cellHexColor.includes('#'))
+        cellHexColor = rgb_to_hex(cellHexColor);
+  
+    if (same_color(cellHexColor, tagColor, 1.5)) {
         cells[point.indexX + point.indexY * res] = fillColor;
+        let res = Math.sqrt(cells.length);
 
         if (point.indexY) {
             let top = { indexX : point.indexX, indexY : point.indexY - 1};
@@ -70,7 +79,7 @@ export function update_color_history(colors, color) {
     for (let i = 0; i < colors.length; i++) {
         let bgColor = colors[i].style.background;
         if (bgColor) {
-            if (same_color(color, rgb_to_hex(bgColor), 1)) {
+            if (same_color(color, rgb_to_hex(bgColor), 1.5)) {
                 padHasColor = true;
                 index = i;
                 break;
