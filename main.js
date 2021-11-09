@@ -171,6 +171,8 @@ function update_color_history(colors, color) {
             if (rgb_to_hex(bgColor).toLowerCase() == color) {
                 padHasColor = true;
                 index = i;
+                console.log("I'm adding");
+                console.log(bgColor);
                 break;
             }
         }
