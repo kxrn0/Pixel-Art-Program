@@ -9,13 +9,13 @@ export function flood_fill(cells, point, tagColor, fillColor) {
     if (same_color(tagColor, fillColor, 1.5))
         return;
 
+    let res = Math.sqrt(cells.length);
     let cellHexColor = cells[point.indexX + point.indexY * res];
     if (!cellHexColor.includes('#'))
         cellHexColor = rgb_to_hex(cellHexColor);
   
     if (same_color(cellHexColor, tagColor, 1.5)) {
         cells[point.indexX + point.indexY * res] = fillColor;
-        let res = Math.sqrt(cells.length);
 
         if (point.indexY) {
             let top = { indexX : point.indexX, indexY : point.indexY - 1};
