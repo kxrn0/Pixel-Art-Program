@@ -33,7 +33,6 @@ let resolution, cellWidth, color, isDrawing, prevX, prevY, mode, cells;
 
 //=======================================================================================================
 
-
 pen.addEventListener("click", () => {
     mode = modes.PEN;
     color = colorSelector.value;
@@ -176,7 +175,6 @@ function update_color_history(colors, color) {
             perDrop = 100 * diff / largest;
             threshold = 1;
             
-            //if (rgb_to_hex(bgColor).toLowerCase() == color) {
             if (perDrop < threshold) {
                 padHasColor = true;
                 index = i;
@@ -190,11 +188,8 @@ function update_color_history(colors, color) {
             colors[i].style.background = colors[i - 1].style.background;
         colors[0].style.background = color;
     }
-    else {
-        console.log("I'm adding");
-        console.log(color);
+    else 
         add_to_color_history(colors, color);
-    }
 }
 
 function pick_color(event, context) {
