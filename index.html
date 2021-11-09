@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+    <div class="content">
+        <div class="drawing-tools">
+            <div class="buttons">
+                <img src="images/pen.png" alt="" class="hovered tool" id="pen">
+                <img src="images/eraser.png" alt="" class="hovered tool" id="eraser">
+                <img src="images/bucket.png" alt="" class="hovered tool" id="fill">
+                <img src="images/color_picker.png" alt="" class="hovered tool" id="color-picker">
+            </div>
+            <canvas id="canvas" width="512" height="512"></canvas>
+        </div>
+        <div class="bottom-tools">
+            <div class="functions">
+                <div class="grid-checkbox hovered">
+                    <label for="check-grid">Show Grid</label>
+                    <input type="checkbox" id="check-grid">
+                </div>
+                <a id="save-link" download="image.png" href=""><button class="button hovered save">Save</button></a>
+                <button class="button hovered new-canvas">New Canvas</button>
+                <button class="button hovered clear-canvas">Clear Canvas</button>
+            </div>
+            <div class="color-tools">
+                <input type="color" value="#ff0000" id="color-selector" class="hovered">
+                <div class="color-history">
+                    <p>Recently Used</p>
+                    <div class="colors">
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                        <div class="color-pad"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal">
+            <div class="modal-content">
+                <div class="choices">
+                    <div class="radio">
+                        <input type="radio" id="radio-0" name="choice" value="8" class="size-radio">
+                        <label for="radio-0">8 x 8</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" id="radio-1" name="choice" value="16" class="size-radio">
+                        <label for="radio-1">16 x 16</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" id="radio-2" name="choice" value="32" class="size-radio">
+                        <label for="radio-2">32 x 32</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" id="radio-3" name="choice" value="64" class="size-radio">
+                        <label for="radio-3">64 x 64</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" id="radio-4" name="choice" value="128" class="size-radio">
+                        <label for="radio-4">128 x 128</label>
+                    </div>
+                </div>
+                <div class="custom-choice">
+                    <p>Custom (may contain artifacts) :</p>
+                    <input type="number" id="custom-size">
+                </div>
+                <button class="create-canvas button hovered">Create Canvas</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
