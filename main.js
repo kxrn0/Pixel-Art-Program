@@ -1,4 +1,4 @@
-import { random_color, decimal_to_hexadecimal } from "./utilities.js";
+import { random_color, decimal_to_hexadecimal, hexadecimal_to_decimal} from "./utilities.js";
 import { draw_cells, clear_cells, draw_grid, index_of } from "./drawing_utilities.js";
 
 //=======================================================================================================
@@ -168,11 +168,18 @@ function update_color_history(colors, color) {
     for (let i = 0; i < colors.length; i++) {
         let bgColor = colors[i].style.background;
         if (bgColor) {
-            if (rgb_to_hex(bgColor).toLowerCase() == color) {
+            let largest, perDrop, threshold, color1, color2, diff;
+            color1 = hexadecimal_to_decimal(color.slice(1));
+            color2 = hexadecimal_to_decimal(rgb_to_hex(bgColor).slice(1));
+            diff = Math.abs(color1 - color2);
+            largest = color1 > color2 ? color1 : color2;
+            perDrop = 100 * diff / largest;
+            threshold = 1;
+            
+            //if (rgb_to_hex(bgColor).toLowerCase() == color) {
+            if (perDrop < threshold) {
                 padHasColor = true;
                 index = i;
-                console.log("I'm adding");
-                console.log(bgColor);
                 break;
             }
         }
@@ -184,6 +191,8 @@ function update_color_history(colors, color) {
         colors[0].style.background = color;
     }
     else {
+        console.log("I'm adding");
+        console.log(color);
         add_to_color_history(colors, color);
     }
 }

@@ -18,3 +18,23 @@ export function decimal_to_hexadecimal(decimal) {
     }
     return hex.join('');
 }
+
+function hex_to_dex_bits(hex) {
+    hex = hex.toUpperCase();
+    
+    if (hex.charCodeAt() < 58)
+        return hex.charCodeAt() - 48;
+    return hex.charCodeAt() - 55;
+}
+
+export function hexadecimal_to_decimal(hex) {
+    let dec, power;
+
+    dec = 0;
+    power = hex.length - 1;
+
+    for (let i = 0; i < hex.length; i++, power--)
+        dec += Math.pow(16, power) * hex_to_dex_bits(hex[i]);
+    
+    return dec;
+}
