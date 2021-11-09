@@ -215,3 +215,21 @@ input[type=number]::-webkit-outer-spin-button {
 .custom-choice p {
     margin-right: 5px;
 }
+
+/* POINTER */
+
+.pen {
+    cursor:url(icons_small/pen_small.png), wait;
+}
+
+.eraser {
+    cursor:url(icons_small/eraser_small.png), wait;
+}
+
+.bucket {
+    cursor:url(icons_small/bucket_small.png), wait;
+}
+
+.color-picker {
+    cursor:url(icons_small/color_picker_small.png), wait;
+}

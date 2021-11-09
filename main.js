@@ -1,5 +1,6 @@
-import { random_color, decimal_to_hexadecimal, hexadecimal_to_decimal} from "./utilities.js";
+import { random_color, decimal_to_hexadecimal} from "./utilities.js";
 import { draw_cells, clear_cells, draw_grid, index_of } from "./drawing_utilities.js";
+import { flood_fill, rgb_to_hex, update_color_history, pick_color} from "./color_utilities.js";
 
 //=======================================================================================================
 
@@ -36,20 +37,41 @@ let resolution, cellWidth, color, isDrawing, prevX, prevY, mode, cells;
 pen.addEventListener("click", () => {
     mode = modes.PEN;
     color = colorSelector.value;
+
+    canvas.classList.add("pen");
+    canvas.classList.remove("eraser");
+    canvas.classList.remove("bucket");
+    canvas.classList.remove("color-picker");
 });
 
 eraser.addEventListener("click", () => {
     mode = modes.PEN;
     color = "rgba(0, 0, 0, 0)"
+
+    canvas.classList.add("eraser");
+    canvas.classList.remove("pen");
+    canvas.classList.remove("bucket");
+    canvas.classList.remove("color-picker");
 });
 
-//I will replace the fill functionality with flood fill later
 fill.addEventListener("click", () => {
     mode = modes.FILL
     color = colorSelector.value;
+
+    canvas.classList.add("bucket");
+    canvas.classList.remove("pen");
+    canvas.classList.remove("eraser");
+    canvas.classList.remove("color-picker");
 });
 
-colorPicker.addEventListener("click", () => mode = modes.COLOR_PICKER);
+colorPicker.addEventListener("click", () => {
+    mode = modes.COLOR_PICKER
+
+    canvas.classList.add("color-picker");
+    canvas.classList.remove("pen");
+    canvas.classList.remove("bucket");
+    canvas.classList.remove("eraser");
+});
 
 colors.forEach(colorPad => colorPad.addEventListener("click", () => {
     if (colorPad.style.background) {
@@ -72,11 +94,14 @@ canvas.addEventListener("mousedown", event => {
         color = colorSelector.value;
         mode = modes.PEN;
         update_color_history(colors, color);
+
+        canvas.classList.remove("color-picker");
+        canvas.classList.add("pen");
     }
     else if (mode == modes.FILL) { 
-        for (let i = 0; i < cells.length; i++)
-            cells[i] = color;
-        mode = modes.PEN;
+        let point = index_of(event.offsetX, event.offsetY, cellWidth);
+        let tagColor = cells[point.indexX + point.indexY * resolution];
+        flood_fill(cells, point, tagColor, color);
     }
 
 });
@@ -120,87 +145,13 @@ canvas.addEventListener("mousemove", event => {
     }
 });
 
-canvas.addEventListener("mouseup", event => {
-    isDrawing = false;
-
-    if (mode == modes.PEN) { }
-    else if (mode == modes.COLOR_PICKER) { }
-    else if (mode == modes.FILL) { }
-});
+canvas.addEventListener("mouseup", () => isDrawing = false);
 
 canvas.addEventListener("mouseout", () => {
     if (isDrawing) {
         isDrawing = false;
     }
 });
-
-//........................................................................................................
-
-function add_to_color_history(colors, color) {
-    let maxIndex = colors.reduce((index, color) => index += color.classList.contains("color") ? 1 : 0, 0);
-    if (maxIndex < colors.length) {
-        colors[maxIndex].classList.add("color");
-        colors[maxIndex].classList.add("hovered");
-    }
-
-    if (maxIndex == colors.length)
-        maxIndex--;
-
-    for (let i = maxIndex; i > 0; i--)
-        colors[i].style.background = colors[i - 1].style.background;
-    colors[0].style.background = color;
-}
-
-function rgb_to_hex(rgb) {
-    let hex = '#';
-    let colors = rgb.split(' ');
-    for (let i = 0; i < colors.length; i++)
-      hex += decimal_to_hexadecimal(colors[i].match(/\d+/)[0]).padStart(2, '0');
-
-    return hex;
-  }
-
-function update_color_history(colors, color) {
-    let padHasColor = false, index;
-    color = color.includes('#') ? color.toLowerCase() : rgb_to_hex(color).toLowerCase();
-
-    for (let i = 0; i < colors.length; i++) {
-        let bgColor = colors[i].style.background;
-        if (bgColor) {
-            let largest, perDrop, threshold, color1, color2, diff;
-            color1 = hexadecimal_to_decimal(color.slice(1));
-            color2 = hexadecimal_to_decimal(rgb_to_hex(bgColor).slice(1));
-            diff = Math.abs(color1 - color2);
-            largest = color1 > color2 ? color1 : color2;
-            perDrop = 100 * diff / largest;
-            threshold = 1;
-            
-            if (perDrop < threshold) {
-                padHasColor = true;
-                index = i;
-                break;
-            }
-        }
-    }
-
-    if (padHasColor) {
-        for (let i = index; i > 0; i--)
-            colors[i].style.background = colors[i - 1].style.background;
-        colors[0].style.background = color;
-    }
-    else 
-        add_to_color_history(colors, color);
-}
-
-function pick_color(event, context) {
-    let x, y, pixel;
-    x = event.layerX;
-    y = event.layerY;
-    pixel = context.getImageData(x, y, 1, 1);
-    return pixel.data;
-}
-
-/* ******************************************************************************************************** */
 
 save.addEventListener("click", () => {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -218,12 +169,11 @@ colorSelector.addEventListener("change", event => {
     update_color_history(colors, color);
 });
 
-//=======================================================================================================
-
 function init(res) {
     resolution = res;
     cellWidth = canvas.width / resolution;
 
+    canvas.classList.add("pen");
     color = colorSelector.value;
     colors[0].style.background = color;
     colors[0].classList.add("color");
