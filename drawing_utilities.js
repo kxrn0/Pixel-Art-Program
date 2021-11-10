@@ -39,3 +39,32 @@ export function draw_grid(context, cellW) {
 export function index_of(canvasX, canvasY, cellW) {
     return {indexX: Math.floor(canvasX / cellW), indexY: Math.floor(canvasY / cellW)};
 }
+
+export function draw_line(event, prevCoords, cells, cellWidth, color) {
+    let prev, curr, start, end, resolution;
+    prev = index_of(prevCoords.prevX, prevCoords.prevY, cellWidth);
+    curr = index_of(event.offsetX, event.offsetY, cellWidth);
+    resolution = Math.sqrt(cells.length);
+
+    if (prev.indexX != curr.indexX || prev.indexY != curr.indexY) {
+        if (prev.indexX != curr.indexX) {
+            let slope;
+
+            start = prev.indexX < curr.indexX ? prev.indexX : curr.indexX;
+            end = (prev.indexX < curr.indexX ? curr.indexX : prev.indexX) % resolution;
+            if (start < 0)
+                start = 0;
+            slope = (curr.indexY - prev.indexY) / (curr.indexX - prev.indexX);
+            for (let xi = start; xi <= end; xi++) {
+                let yi = Math.round(slope * (xi - prev.indexX) + prev.indexY);
+                cells[xi + yi * resolution] = color;
+            }
+        }
+        else {
+            start = prev.indexY < curr.indexY ? prev.indexY : curr.indexY;
+            end = (prev.indexY < curr.indexY ? curr.indexY : prev.indexY) % resolution;
+            for (let yi = start; yi <= end; yi++)
+                cells[prev.indexX + yi * resolution] = color;
+        }
+    }
+}

@@ -1,5 +1,5 @@
 import { random_color, decimal_to_hexadecimal} from "./utilities.js";
-import { draw_cells, clear_cells, draw_grid, index_of } from "./drawing_utilities.js";
+import { draw_cells, clear_cells, draw_grid, index_of, draw_line } from "./drawing_utilities.js";
 import { flood_fill, rgb_to_hex, update_color_history, pick_color} from "./color_utilities.js";
 
 //=======================================================================================================
@@ -108,33 +108,8 @@ canvas.addEventListener("mousedown", event => {
 
 canvas.addEventListener("mousemove", event => {
     if (mode == modes.PEN) {
-        if (isDrawing) {
-            let prev, curr, start, end;
-            prev = index_of(prevX, prevY, cellWidth);
-            curr = index_of(event.offsetX, event.offsetY, cellWidth);
-
-            if (prev.indexX != curr.indexX || prev.indexY != curr.indexY) {
-                if (prev.indexX != curr.indexX) {
-                    let slope;
-
-                    start = prev.indexX < curr.indexX ? prev.indexX : curr.indexX;
-                    end = (prev.indexX < curr.indexX ? curr.indexX : prev.indexX) % resolution;
-                    if (start < 0)
-                        start = 0;
-                    slope = (curr.indexY - prev.indexY) / (curr.indexX - prev.indexX);
-                    for (let xi = start; xi <= end; xi++) {
-                        let yi = Math.round(slope * (xi - prev.indexX) + prev.indexY);
-                        cells[xi + yi * resolution] = color;
-                    }
-                }
-                else {
-                    start = prev.indexY < curr.indexY ? prev.indexY : curr.indexY;
-                    end = (prev.indexY < curr.indexY ? curr.indexY : prev.indexY) % resolution;
-                    for (let yi = start; yi <= end; yi++)
-                        cells[prev.indexX + yi * resolution] = color;
-                }
-            }
-        }
+        if (isDrawing)
+            draw_line(event, {prevX, prevY}, cells, cellWidth, color);
         prevX = event.offsetX;
         prevY = event.offsetY;
 
