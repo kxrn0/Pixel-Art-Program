@@ -119,6 +119,8 @@ canvas.addEventListener("mousemove", event => {
 
                     start = prev.indexX < curr.indexX ? prev.indexX : curr.indexX;
                     end = (prev.indexX < curr.indexX ? curr.indexX : prev.indexX) % resolution;
+                    if (start < 0)
+                        start = 0;
                     slope = (curr.indexY - prev.indexY) / (curr.indexX - prev.indexX);
                     for (let xi = start; xi <= end; xi++) {
                         let yi = Math.round(slope * (xi - prev.indexX) + prev.indexY);
