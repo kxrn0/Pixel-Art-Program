@@ -6,15 +6,16 @@ export function flood_fill(cells, point, tagColor, fillColor) {
     if (!fillColor.includes('#'))
         fillColor = rgb_to_hex(fillColor);
 
-    if (same_color(tagColor, fillColor, 1.5))
+    if (same_color(tagColor, fillColor, 2.5)) {
         return;
+    }
 
     let res = Math.sqrt(cells.length);
     let cellHexColor = cells[point.indexX + point.indexY * res];
     if (!cellHexColor.includes('#'))
         cellHexColor = rgb_to_hex(cellHexColor);
   
-    if (same_color(cellHexColor, tagColor, 1.5)) {
+    if (same_color(cellHexColor, tagColor, 2.5)) {
         cells[point.indexX + point.indexY * res] = fillColor;
 
         if (point.indexY) {
@@ -61,6 +62,9 @@ export function rgb_to_hex(rgb) {
 }
 
 function same_color(color1, color2, threshold) {
+    if (color1 === color2)
+        return true;
+
     color1 = hexadecimal_to_decimal(color1.slice(1));
     color2 = hexadecimal_to_decimal(color2.slice(1));
 
@@ -79,7 +83,7 @@ export function update_color_history(colors, color) {
     for (let i = 0; i < colors.length; i++) {
         let bgColor = colors[i].style.background;
         if (bgColor) {
-            if (same_color(color, rgb_to_hex(bgColor), 1.5)) {
+            if (same_color(color, rgb_to_hex(bgColor), 2.5)) {
                 padHasColor = true;
                 index = i;
                 break;

@@ -106,8 +106,6 @@ canvas.addEventListener("mousedown", event => {
 
 });
 
-//this is certainly an annoying bug, but I think I'll finish the implementation of the rest of the buttons and color
-//history pad, and will ask for help later.
 canvas.addEventListener("mousemove", event => {
     if (mode == modes.PEN) {
         if (isDrawing) {
@@ -120,7 +118,7 @@ canvas.addEventListener("mousemove", event => {
                     let slope;
 
                     start = prev.indexX < curr.indexX ? prev.indexX : curr.indexX;
-                    end = prev.indexX < curr.indexX ? curr.indexX : prev.indexX;
+                    end = (prev.indexX < curr.indexX ? curr.indexX : prev.indexX) % resolution;
                     slope = (curr.indexY - prev.indexY) / (curr.indexX - prev.indexX);
                     for (let xi = start; xi <= end; xi++) {
                         let yi = Math.round(slope * (xi - prev.indexX) + prev.indexY);
@@ -129,7 +127,7 @@ canvas.addEventListener("mousemove", event => {
                 }
                 else {
                     start = prev.indexY < curr.indexY ? prev.indexY : curr.indexY;
-                    end = prev.indexY < curr.indexY ? curr.indexY : prev.indexY;
+                    end = (prev.indexY < curr.indexY ? curr.indexY : prev.indexY) % resolution;
                     for (let yi = start; yi <= end; yi++)
                         cells[prev.indexX + yi * resolution] = color;
                 }
@@ -174,6 +172,11 @@ function init(res) {
     cellWidth = canvas.width / resolution;
 
     canvas.classList.add("pen");
+    canvas.classList.add("pen");
+    canvas.classList.remove("eraser");
+    canvas.classList.remove("bucket");
+    canvas.classList.remove("color-picker");
+
     color = colorSelector.value;
     colors[0].style.background = color;
     colors[0].classList.add("color");
